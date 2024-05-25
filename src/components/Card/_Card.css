@@ -1,0 +1,26 @@
+:root {
+  --tealist-blue: #2b3240;
+  --red-orange: #de7456;
+  --cyan-blue: #a0c0d6;
+  --light-navy-blue: #43597d;
+  --green: #75ff33;
+  --orange: #ffbd33;
+
+  --grim-reaper: #0c133b;
+  --cold-heights: #32d3e7;
+  --shiroi-white: #ebf4f1;
+  --snow-leopard: #d1e0db;
+
+  --border-radius: 0.5em;
+  --box-shadow: 0px 0px 10px 0px rgba(12, 19, 59, 0.75);
+}
+
+
+.card-box {
+    margin-top: 20px;
+    margin-left: 50px;
+    border-radius: var(--border-radius);
+    width: 200px;
+    height: 200px;
+    box-shadow: var(--box-shadow);
+}
