@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -18,57 +18,75 @@ import { Icon } from "@iconify/react";
 interface ValuesType {
   id?: string;
   date: string;
-  nameSurname: string;
+  name_surname: string;
   phone: string;
-  personel: string;
+  personel: number;
+  note?: string;
   hour: string;
+}
+
+interface PersonelType {
+  id: number;
+  name: string;
+  surname: string;
+  phone: string;
+  status: boolean;
 }
 
 const AppointmentForm = () => {
   const [loading, setloading] = useState<boolean>(false);
   const [data, setdata] = useState<ValuesType[]>([]);
+  const [personeller, setPersoneller] = useState<PersonelType[]>([]);
+  const [personel, setPersonel] = useState<number>();
+  const [date, setDate] = useState<string>("");
   const initialState = {
     date: "",
-    nameSurname: "",
+    name_surname: "",
     phone: "",
-    personel: "",
+    personel: 0,
     hour: "",
   };
 
   const validationSchema = Yup.object().shape({
     date: Yup.date().required("Zorunlu alan"),
-    nameSurname: Yup.string().required("Zorunlu alan"),
+    name_surname: Yup.string().required("Zorunlu alan"),
     phone: Yup.string()
       .required("Zorunlu alan")
       .max(10, "Telefon numaraniz 10 haneli olmalidir")
       .matches(/^(?:\+?90|0)?\d{10}$/, "Geçerli bir telefon numarası giriniz"),
-    personel: Yup.string().required("Zorunlu alan"),
+    personel: Yup.number().required("Zorunlu alan"),
     hour: Yup.string().required("Zorunlu alan"),
   });
 
-  const fetchAppointments = async (date: string) => {
-    setloading(true);
-    const client = axiosInstance();
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const response = await client.get<ValuesType[]>(
-        "http://localhost:3000/appointments",
-      );
+  useEffect(() => {
+    const fetchPersonels = async () => {
+      const client = axiosInstance();
 
-      const filteredData = response.data.filter((item) => item.date === date);
-      setdata(filteredData);
-    } catch (error) {
-      console.log(error);
-    }
-    setloading(false);
-  };
+      const response = await client.get<PersonelType[]>("/api/personeller/");
+      const active_personeller = response.data.filter(
+        (item) => item.status === true,
+      );
+      setPersoneller(active_personeller);
+    };
+
+    fetchPersonels();
+  }, []);
+
+  useEffect(() => {
+    const fetchRandevular = async () => {
+      const client = axiosInstance();
+      const response = await client.get("/api/randevular");
+      setdata(response.data);
+    };
+    fetchRandevular();
+  }, []);
 
   const handleSubmit = async (values: ValuesType, resetForm: any) => {
     setloading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axios.post(
-        "http://localhost:3000/appointments",
+        "http://localhost:8000/api/randevular/",
         values,
       );
       if (response.status === 201) {
@@ -79,7 +97,7 @@ const AppointmentForm = () => {
           title: "Randevunuz basarili bir sekilde olusturuldu",
           position: "top-right",
           icon: "success",
-          text: `Basvuru numaraniz: ${response.data.id}`,
+          text: `Basvuru durumunuzu telefon numaraniz ile sorgulayabilirsiniz.`,
           showConfirmButton: false,
           timer: 4000,
         });
@@ -90,7 +108,12 @@ const AppointmentForm = () => {
     setloading(false);
   };
 
-  const disabledHours = data.map((item) => item.hour);
+  const disabledHours = useMemo(() => {
+    const items = data.filter(
+      (item) => item.personel === personel && item.date === date,
+    );
+    return items.map((i) => i.hour);
+  }, [data, personel, date]);
 
   return (
     <>
@@ -123,7 +146,7 @@ const AppointmentForm = () => {
                       className="form-control"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setFieldValue("date", e.target.value);
-                        fetchAppointments(e.target.value);
+                        setDate(e.target.value);
                       }}
                     />
                     <ErrorMessage
@@ -134,7 +157,7 @@ const AppointmentForm = () => {
                   </Col>
                   <Col xs={12} className="mt-4">
                     <label
-                      htmlFor="nameSurname"
+                      htmlFor="name_surname"
                       className="fw-semibold d-flex align-items-center ms-2"
                     >
                       <span>
@@ -145,12 +168,12 @@ const AppointmentForm = () => {
                     <Field
                       disabled={loading}
                       type="text"
-                      name="nameSurname"
+                      name="name_surname"
                       className="form-control"
                       placeholder="Isim soyisim giriniz"
                     />
                     <ErrorMessage
-                      name="nameSurname"
+                      name="name_surname"
                       component="div"
                       className="text-danger fw-semibold ms-2 position-absolute w-25"
                     />
@@ -193,10 +216,19 @@ const AppointmentForm = () => {
                       name="personel"
                       className="form-select"
                       disabled={loading}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>,
+                      ) => {
+                        setFieldValue("personel", event.target.value);
+                        setPersonel(+event.target.value);
+                      }}
                     >
                       <option value="">Seciniz</option>
-                      <option value="Emrah">Emrah</option>
-                      <option value="Lokman">Lokman</option>
+                      {personeller.map((personel, index) => (
+                        <option key={index} value={personel.id}>
+                          {personel.name}
+                        </option>
+                      ))}
                     </Field>
                     <ErrorMessage
                       name="personel"

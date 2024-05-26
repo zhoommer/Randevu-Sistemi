@@ -11,7 +11,7 @@ const axiosClient = (token: string | null = null): AxiosInstance => {
       };
 
   const client = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:8000",
     headers,
     timeout: 60000,
     withCredentials: false,
@@ -52,3 +52,4 @@ const axiosClient = (token: string | null = null): AxiosInstance => {
 };
 
 export default axiosClient;
+

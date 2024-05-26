@@ -57,14 +57,15 @@ const Navi = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const client = axiosClient();
-      const response = client.get(`/appointments/${id}`);
+      const response = client.get(`api/randevular/?phone=${id}`);
       response
         .then((res) => {
+          console.log(res.data);
           setId("");
           Swal.fire({
             position: "top-right",
             icon: "info",
-            title: `Sayin ${res.data.nameSurname}. Randevunuz ${res.data.date} tarihi icin ${res.data.personel} adli personele olusturulmus. Dilerseniz iptal edebilirsiniz.`,
+            title: `Sayin ${res.data[0].name_surname}. Randevunuz ${res.data[0].date} tarihi icin ${res.data[0].personel} adli personele olusturulmus. Dilerseniz iptal edebilirsiniz.`,
             showCancelButton: true,
             confirmButtonText: "Randevuyu Iptal Et",
             showLoaderOnConfirm: loading,
@@ -155,6 +156,7 @@ const Navi = () => {
               <InputGroup>
                 <Form.Control
                   placeholder="Randevu ara"
+                  maxLength={10}
                   aria-label="Randevu ara"
                   value={id}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
