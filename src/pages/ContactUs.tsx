@@ -19,7 +19,7 @@ const ContactUs = () => {
                       <span>
                         <BiMobileAlt />
                       </span>
-                      <span>534 810 67 49</span>
+                      <span className="ms-2">534 810 67 49</span>
                     </a>
                   </Card.Text>
                 </Card.Body>

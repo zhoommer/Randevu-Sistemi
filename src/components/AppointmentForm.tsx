@@ -97,7 +97,8 @@ const AppointmentForm = () => {
         data.push(response.data);
         resetForm();
         Swal.fire({
-          title: "Randevunuz basarili bir sekilde olusturuldu",
+          title:
+            "Randevu olusturma isteginiz basarili bir sekilde olusturuldu.",
           position: "top-right",
           icon: "success",
           text: `Basvuru durumunuzu telefon numaraniz ile sorgulayabilirsiniz.`,
