@@ -8,6 +8,7 @@ import {
   BiSolidMobile,
   BiSolidUserCircle,
   BiSolidTime,
+  BiSolidNote,
 } from "react-icons/bi";
 import { hours } from "../data/hours";
 import axios from "axios";
@@ -44,6 +45,7 @@ const AppointmentForm = () => {
     name_surname: "",
     phone: "",
     personel: 0,
+    note: "",
     hour: "",
   };
 
@@ -83,6 +85,7 @@ const AppointmentForm = () => {
 
   const handleSubmit = async (values: ValuesType, resetForm: any) => {
     setloading(true);
+
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axios.post(
@@ -270,6 +273,23 @@ const AppointmentForm = () => {
                     />
                   </Col>
 
+                  <Col className="mt-4" xs={12}>
+                    <label
+                      htmlFor="note"
+                      className="fw-semibold d-flex align-items-center ms-2"
+                    >
+                      <span>
+                        <BiSolidNote />
+                      </span>
+                      <span className="ms-2">Not Giriniz</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="note"
+                      className="form-control"
+                      disabled={loading}
+                    />
+                  </Col>
                   <Col xs={12} className="mt-4 d-flex justify-content-end">
                     <Button
                       type="submit"

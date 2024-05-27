@@ -155,7 +155,7 @@ const Navi = () => {
             <Nav>
               <InputGroup>
                 <Form.Control
-                  placeholder="Randevu ara"
+                  placeholder="Telefon numaranizi giriniz..."
                   maxLength={10}
                   aria-label="Randevu ara"
                   value={id}
@@ -168,7 +168,7 @@ const Navi = () => {
                   id="search-appointment"
                   onClick={() => fetchAppointmentById()}
                 >
-                  Ara
+                  Randevu Ara
                   {loading && (
                     <Spinner
                       size="sm"
