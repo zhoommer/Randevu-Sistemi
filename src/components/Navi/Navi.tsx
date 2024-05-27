@@ -60,12 +60,13 @@ const Navi = () => {
       const response = client.get(`api/randevular/?phone=${id}`);
       response
         .then((res) => {
-          console.log(res.data);
           setId("");
+          const message1 = `Sayin ${res.data[0].name_surname}. Randevunuz ${res.data[0].date} tarihi icin ${res.data[0].personel} adli personele olusturulmus. Dilerseniz iptal edebilirsiniz.`;
+          const message2 = `Sayin ${res.data[0].name_surname}. Randevunuz onay bekliyor. Dilerseniz iptal edebilirsiniz.`;
           Swal.fire({
             position: "top-right",
             icon: "info",
-            title: `Sayin ${res.data[0].name_surname}. Randevunuz ${res.data[0].date} tarihi icin ${res.data[0].personel} adli personele olusturulmus. Dilerseniz iptal edebilirsiniz.`,
+            title: `${res.data[0].onay_durumu ? message1 : message2}`,
             showCancelButton: true,
             confirmButtonText: "Randevuyu Iptal Et",
             showLoaderOnConfirm: loading,
@@ -77,7 +78,7 @@ const Navi = () => {
               try {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 2000));
-                await client.delete(`/appointments/${res.data.id}`);
+                await client.delete(`api/randevular/iptal/${res.data[0].id}`);
                 Swal.fire({
                   position: "bottom-end",
                   icon: "success",
