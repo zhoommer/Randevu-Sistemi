@@ -52,4 +52,3 @@ const axiosClient = (token: string | null = null): AxiosInstance => {
 };
 
 export default axiosClient;
-

@@ -15,6 +15,12 @@ import axios from "axios";
 import axiosInstance from "../services/axiosInstance";
 import Swal from "sweetalert2";
 import { Icon } from "@iconify/react";
+import MultiSelect from "./MultiSelect/MultiSelect";
+
+interface IslemType {
+  label: string;
+  values: string;
+}
 
 interface ValuesType {
   id?: string;
@@ -24,6 +30,7 @@ interface ValuesType {
   personel: number;
   note?: string;
   hour: string;
+  islem: IslemType[];
 }
 
 interface PersonelType {
@@ -47,6 +54,7 @@ const AppointmentForm = () => {
     personel: 0,
     note: "",
     hour: "",
+    islem: [],
   };
 
   const validationSchema = Yup.object().shape({
@@ -274,6 +282,28 @@ const AppointmentForm = () => {
                     />
                   </Col>
 
+                  <Col className="mt-4">
+                    <label
+                      htmlFor="islem"
+                      className="fw-semibold d-flex align-items-center ms-2"
+                    >
+                      <span>
+                        <BiSolidTime />
+                      </span>
+                      <span className="ms-2">Islem Seciniz</span>
+                    </label>
+                    <Field
+                      name="islem"
+                      className="form-select"
+                      component={MultiSelect}
+                      disabled={loading}
+                    />
+                    <ErrorMessage
+                      name="islem"
+                      component="div"
+                      className="text-danger fw-semibold ms-2 position-absolute w-25"
+                    />
+                  </Col>
                   <Col className="mt-4" xs={12}>
                     <label
                       htmlFor="note"
